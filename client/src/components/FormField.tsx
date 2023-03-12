@@ -1,5 +1,5 @@
 const FormField = () => {
-    return <div>FormField</div>
-}
+    return <div>FormField</div>;
+};
 
-export default FormField
+export default FormField;

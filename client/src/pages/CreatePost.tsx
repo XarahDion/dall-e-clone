@@ -1,9 +1,5 @@
-
-
 const CreatePost = () => {
-  return (
-    <div>CreatePost</div>
-  )
-}
+    return <div>CreatePost</div>;
+};
 
-export default CreatePost
+export default CreatePost;
