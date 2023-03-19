@@ -1,4 +1,4 @@
-export const surpriseMePrompts = [
+export const surpriseMePrompts: string[] = [
     'A quirky armchair in the shape of an avocado',
     'A surreal and dream-like oil painting by Salvador Dalí depicting a cat playing checkers',
     'Adorable teddy bears shopping for groceries in Japan, captured in ukiyo-e',
