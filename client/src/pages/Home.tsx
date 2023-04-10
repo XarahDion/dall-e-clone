@@ -6,6 +6,12 @@ interface RenderCardsProps {
     title: string;
 }
 
+interface Post {
+    id: number;
+    name: string;
+    prompt: string;
+}
+
 const RenderCards: React.FC<RenderCardsProps> = ({ data, title }) => {
     if (data?.length > 0) {
         return (
@@ -21,8 +27,10 @@ const RenderCards: React.FC<RenderCardsProps> = ({ data, title }) => {
 
 const Home = () => {
     const [loading, setLoading] = useState(false);
-    const [allPosts, setAllPosts] = useState(null);
+    const [allPosts, setAllPosts] = useState<Post[]>([]);
     const [searchText, setSearchText] = useState("");
+    const [searchResults, setSearchResults] = useState<Post[]>([]);
+    const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout>>(0);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -47,6 +55,22 @@ const Home = () => {
         fetchPosts();
     }, []);
 
+    const handleSearch = (e: any) => {
+        clearTimeout(searchTimeout);
+        setSearchText(e.target.value);
+
+        setSearchTimeout(
+            setTimeout(() => {
+                const searchResults = allPosts.filter(
+                    (item) =>
+                        item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+                        item.prompt.toLowerCase().includes(searchText.toLocaleLowerCase())
+                );
+                setSearchResults(searchResults);
+            }, 500)
+        );
+    };
+
     return (
         <section className="max-w-7xl mx-auto">
             <div>
@@ -56,7 +80,14 @@ const Home = () => {
                 </p>
             </div>
             <div className="mt-16">
-                <FormField />
+                <FormField
+                    labelName="search posts"
+                    type="text"
+                    name="text"
+                    placeholder="search posts"
+                    value={searchText}
+                    handleChange={handleSearch}
+                />
             </div>
             <div className="mt-10">
                 {loading ? (
@@ -67,13 +98,12 @@ const Home = () => {
                     <>
                         {searchText && (
                             <h2 className="font-medium text-[#666e75] text-xl mb-3">
-                                Showing results for
-                                <span className="text-[#222328]">{searchText}</span>
+                                Showing results for <span className="text-[#222328]"> {searchText}</span>
                             </h2>
                         )}
                         <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
                             {searchText ? (
-                                <RenderCards data={allPosts} title="No Search results found" />
+                                <RenderCards data={searchResults} title="No Search results found" />
                             ) : (
                                 <RenderCards data={allPosts} title="No posts found" />
                             )}
