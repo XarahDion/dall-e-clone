@@ -10,7 +10,29 @@ const CreatePost = () => {
     const [generatingImg, setGeneratingImg] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const generateImg = () => {};
+    const generateImg = async () => {
+        if (form.prompt) {
+            try {
+                setGeneratingImg(true);
+                const response = await fetch("http://localhost:8080/api/v1/dalle", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ prompt: form.prompt }),
+                });
+                const data = await response.json();
+
+                setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+            } catch (error) {
+                alert(error);
+            } finally {
+                setGeneratingImg(false);
+            }
+        } else {
+            alert("Please enter a prompt");
+        }
+    };
 
     const handleSubmit = () => {};
 
@@ -70,7 +92,7 @@ const CreatePost = () => {
                     <button
                         type="button"
                         onClick={generateImg}
-                        className="text-white bg-green-700 font-meidum rounded-md text-sm w-full sm:w-auto ps-5 py-2.5 text-center"
+                        className="text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                     >
                         {generatingImg ? "Generating..." : "Generate"}
                     </button>
@@ -81,7 +103,7 @@ const CreatePost = () => {
                     </p>
                     <button
                         type="submit"
-                        className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto ps-5 py-2.5 text-center"
+                        className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                     >
                         {loading ? "Sharing..." : "Share with the community"}
                     </button>
